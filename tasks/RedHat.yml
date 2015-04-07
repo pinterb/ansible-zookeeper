@@ -1,9 +1,9 @@
 ---
 - file: path=/opt/src state=directory
-- file: path={{zookeeper_dir}} state=directory
+- file: path={{ zookeeper_dir }} state=directory
 
 - name: Download zookeeper version.
-  get_url: url={{zookeeper_url}} dest=/opt/src/zookeeper-{{zookeeper_version}}.tar.gz
+  get_url: url={{ zookeeper_url }} dest=/opt/src/zookeeper-{{ zookeeper_version }}.tar.gz
   tags: bootstrap
 
 - name: Install OS Packages
@@ -12,38 +12,46 @@
     - libselinux-python
 
 - name: Unpack tarball.
-  command: tar zxf /opt/src/zookeeper-{{zookeeper_version}}.tar.gz --strip-components=1 chdir={{zookeeper_dir}} creates={{zookeeper_dir}}/bin
+  command: tar zxf /opt/src/zookeeper-{{ zookeeper_version }}.tar.gz --strip-components=1 chdir={{ zookeeper_dir }} creates={{ zookeeper_dir }}/bin
   tags: bootstrap
 
 - group: name=zookeeper system=yes
 - user: name=zookeeper group=zookeeper system=yes
 
 - name: Change ownership on zookeeper directory.
-  file: path={{zookeeper_dir}} state=directory owner=zookeeper group=zookeeper recurse=yes
+  file: path={{ zookeeper_dir }} state=directory owner=zookeeper group=zookeeper recurse=yes
   tags: bootstrap
 
 - name: Create zookeeper data folder.
-  file: path={{data_dir}} state=directory recurse=yes owner=zookeeper group=zookeeper
+  file: path={{ zookeeper_data_dir }} state=directory recurse=yes owner=zookeeper group=zookeeper
   tags: bootstrap
 
 - name: Create zookeeper logs folder.
-  file: path={{log_dir}} state=directory recurse=yes owner=zookeeper group=zookeeper
+  file: path={{ zookeeper_log_dir }} state=directory recurse=yes owner=zookeeper group=zookeeper
   tags: bootstrap
 
 - name: Upstart script.
   template: src=zookeeper.conf.j2 dest=/etc/init/zookeeper.conf
   notify:
-    - Restart Zookeeper
+    - restart zookeeper
   tags: deploy
 
 - name: Write myid file.
-  template: src=myid.j2 dest={{data_dir}}/myid owner=zookeeper group=zookeeper
+  template: src=myid.j2 dest={{ zookeeper_data_dir }}/myid owner=zookeeper group=zookeeper
   notify:
-    - Restart Zookeeper
+    - restart zookeeper
   tags: deploy
 
 - name: Configure zookeeper
   template: src=zoo.cfg.j2 dest={{ zookeeper_dir }}/conf/zoo.cfg owner=zookeeper group=zookeeper
   notify:
-    - Restart Zookeeper
+    - restart zookeeper
   tags: deploy
+
+- meta: flush_handlers
+
+- name: Enable Zookeeper
+  service: name=zookeeper state=started enabled=yes
+
+- name: Wait for Zookeeper port
+  wait_for: port={{ zookeeper_client_port }} state=started timeout=30

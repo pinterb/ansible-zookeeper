@@ -10,14 +10,22 @@
     - zookeeper
     - zookeeperd
 
-- name: Overwrite myid file.
+- name: Setup myid file.
   template: src=myid.j2 dest=/etc/zookeeper/conf/myid
   notify:
-    - Restart Zookeeper
+    - restart zookeeper
   tags: deploy
 
-- name: Overwrite default config file
+- name: Setup default config file
   template: src=zoo.cfg.j2 dest=/etc/zookeeper/conf/zoo.cfg
   notify:
-    - Restart Zookeeper
+    - restart zookeeper
   tags: deploy
+
+- meta: flush_handlers
+
+- name: Enable Zookeeper
+  service: name=zookeeper state=started enabled=yes
+
+- name: Wait for Zookeeper port
+  wait_for: port={{ zookeeper_client_port }} state=started timeout=30
