@@ -5,6 +5,6 @@ clientPort={{ zookeeper_client_port }}
 initLimit={{ zookeeper_init_limit }}
 syncLimit={{ zookeeper_sync_limit }}
 
-{% for server in groups['zookeeper'] %}
+{% for server in zookeeper_hosts %}
 server.{{ hostvars[server]['zookeeper_myid'] }}={{ server }}:2888:3888
 {% endfor %}
