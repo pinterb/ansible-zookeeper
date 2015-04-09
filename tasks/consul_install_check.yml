@@ -4,5 +4,3 @@
 
 - debug: msg="Consul appears to be installed"
   when: consul_configuration_path.stat.isdir is defined and consul_configuration_path.stat.isdir
-  
-  
