@@ -4,3 +4,9 @@
 
 - include: RedHat.yml
   when: ansible_os_family == 'RedHat'
+
+- include: consul_install_check.yml
+  when: zookeeper_consul_svc_registry_enabled
+
+- include: consul_service_registry.yml
+  when: consul_configuration_path.stat.isdir is defined and consul_configuration_path.stat.isdir

@@ -1,0 +1,13 @@
+---
+- name: create zookeeper health check directory
+  file: path={{ zookeeper_consul_check_dir }} state=directory
+
+- name: install zookeeper consul check script 
+  template: src=zookeeper-health.j2 dest={{ zookeeper_consul_check_dir }}/zookeeper-health mode=755
+  notify:
+    - restart consul
+
+- name: install zookeeper consul services definition 
+  template: src=consul.svcdef.json.j2 dest={{ zookeeper_consul_conf_dir }}/zookeeper.service.json mode=664
+  notify:
+    - restart consul

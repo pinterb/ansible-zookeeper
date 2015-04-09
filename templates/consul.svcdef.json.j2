@@ -1,0 +1,13 @@
+{
+  "service": {
+    "name": "zookeeper",
+    "tags": ["zookeeper"],
+    "port": {{ zookeeper_client_port }},
+    "checks": [
+      {
+        "script": "{{ zookeeper_consul_check_dir }}/zookeeper-health",
+	"interval": "{{ zookeeper_consul_check_interval }}"
+      }
+    ]
+  }
+}

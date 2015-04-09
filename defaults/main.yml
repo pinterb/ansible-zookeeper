@@ -14,3 +14,9 @@ zookeeper_log_dir: /var/log/zookeeper
 zookeeper_dir: /opt/zookeeper-{{zookeeper_version}}
 
 zookeeper_hosts: []
+
+# Consul service registration & health checking
+zookeeper_consul_svc_registry_enabled: false 
+zookeeper_consul_conf_dir: '/opt/consul/conf.d'
+zookeeper_consul_check_dir: '/usr/local/bin'
+zookeeper_consul_check_interval: '15s' 

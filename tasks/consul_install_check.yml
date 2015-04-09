@@ -1,0 +1,8 @@
+- name: determine if consul is installed
+  stat: path={{ zookeeper_consul_conf_dir }}
+  register: consul_configuration_path
+
+- debug: msg="Consul appears to be installed"
+  when: consul_configuration_path.stat.isdir is defined and consul_configuration_path.stat.isdir
+  
+  
