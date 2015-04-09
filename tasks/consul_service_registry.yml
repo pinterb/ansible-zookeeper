@@ -7,6 +7,11 @@
   notify:
     - restart consul
 
+- name: install zookeeper ensemble consul check script 
+  template: src=zookeeper-ensemble-health.j2 dest={{ zookeeper_consul_check_dir }}/zookeeper-ensemble-health mode=755
+  notify:
+    - restart consul
+
 - name: install zookeeper consul services definition 
   template: src=consul.svcdef.json.j2 dest={{ zookeeper_consul_conf_dir }}/zookeeper.service.json mode=664
   notify:

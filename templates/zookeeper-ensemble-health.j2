@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# vim: filetype=sh:tabstop=2:shiftwidth=2:expandtab
+# {{ ansible_managed }}
+
+#######
+# Very simple Zookeeper health check script:
+#
+# exit 0: Success
+# exit 1: Warning
+# 
+# exit 2: Missing a prerequisite
+# 
+# exit 11: Zookeeper service is not running
+# exit 12: Zookeeper flw 'srvr' failed to return either 'leader' or 'follower'
+# 
+# NOTE: These exit codes are intended to be compatiable with Consul health checks:
+# https://www.consul.io/docs/agent/checks.html
+# 
+#######
+
+# Prereq: these commands should be available
+GREP_CMD=`which grep`
+NETCAT_CMD=`which nc`
+
+ZK_HOST="localhost"
+ZK_PORT="{{ zookeeper_client_port  }}"
+
+ZK_SERVICE_CMD="service zookeeper status"
+ZK_SERVICE_EXPECTED_RESP="zookeeper start/running"
+ZK_FLW_CMD="srvr"
+
+
+echoerr()
+{
+	echo "$@" 1>&2;
+}
+
+
+prereq()
+{
+
+	if [ -z "$GREP_CMD" ]; then
+		echoerr "grep doesn't appear to be installed."
+		exit 2 
+	fi
+
+	if [ -z "$NETCAT_CMD" ]; then
+		echoerr "netcat doesn't appear to be installed."
+		exit 2 
+	fi
+}
+
+
+health()
+{
+	local label_check_one="Zookeeper health check 01: "
+	local check_one="$ZK_SERVICE_CMD | $GREP_CMD -q '${ZK_SERVICE_EXPECTED_RESP}'"
+	local label_check_two="Zookeeper health check 02: "
+  local check_two="echo $ZK_FLW_CMD | $NETCAT_CMD $ZK_HOST $ZK_PORT | $GREP_CMD 'follower' || $GREP_CMD 'leader'"
+
+	echo ""
+	echo "$label_check_one $check_one"
+	local service_resp=`$ZK_SERVICE_CMD`
+  echo $service_resp | $GREP_CMD -q "${ZK_SERVICE_EXPECTED_RESP}"
+
+  if [ $? -ne 0 ]; then
+		echoerr "$label_check_one Zookeeper service doesn't appear to be running."
+		exit 11 
+	fi
+
+  echo "$label_check_two $check_two"
+  local zk_srvr_resp=$(echo $ZK_FLW_CMD | $NETCAT_CMD $ZK_HOST $ZK_PORT) 
+  local zk_follower=$(echo $zk_srvr_resp | $GREP_CMD "follower")
+  local zk_leader=$(echo $zk_srvr_resp | $GREP_CMD "leader")    
+
+  if [ -n "${zk_follower}"  ]; then
+    echo "This node is a Zookeeper follower"
+  elif [ -n "${zk_leader}"  ]; then
+    echo "This node is a Zookeeper leader"
+  else
+    echoerr "$label_check_two Zookeeper service is running. But does not appear to be part of any ensemble."
+    exit 12 
+  fi
+
+}
+
+
+main()
+{
+	prereq
+	health
+}
+
+
+main
+exit 0
