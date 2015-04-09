@@ -9,4 +9,4 @@
   service: name=zookeeper state=restarted
 
 - name: restart consul 
-  service: name=consul state=restarted
+  supervisorctl: name=consul state=restarted
