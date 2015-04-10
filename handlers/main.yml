@@ -10,3 +10,8 @@
 
 - name: restart consul 
   supervisorctl: name=consul state=restarted
+
+# Note: Not all configuration changes get reloaded:
+# https://www.consul.io/docs/agent/options.html#reloadable-configuration
+- name: reload consul 
+  comand: name={{ zookeeper_consul_bin_dir }}/consul reload 
