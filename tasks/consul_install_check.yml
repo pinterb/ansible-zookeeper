@@ -14,7 +14,7 @@
   when: consul_executable.stdout is defined and consul_executable.stdout != ""
 
 - name: determine consul version 
-  command: {{ consul_executable.stdout }} version | grep 'Consul v' | awk '{print $2}' | sed 's/[[:alpha:]|(|[:space:]]//g' | awk -F- '{print $1}'')]' 
+  command: "{{ consul_executable.stdout }} version | grep 'Consul v' | awk '{print $2}' | sed 's/[[:alpha:]|(|[:space:]]//g' | awk -F- '{print $1}'"
   register: consul_installed_version
   when: consul_executable.stdout is defined and consul_executable.stdout != ""
 
