@@ -18,5 +18,5 @@
   register: consul_installed_version
   when: consul_executable.stdout is defined and consul_executable.stdout != ""
 
-- debug: msg="Consul installed version: {{ consul_installed_version.stdout }}"
+- debug: msg="Consul installed version {{ consul_installed_version.stdout }} "
   when: consul_installed_version.stdout is defined and consul_installed_version.stdout != ""
