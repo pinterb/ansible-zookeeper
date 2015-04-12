@@ -1,6 +1,22 @@
-- name: determine if consul is installed
+- name: determine if consul config dir exists 
   stat: path={{ zookeeper_consul_conf_dir }}
   register: consul_configuration_path
 
-- debug: msg="Consul appears to be installed"
+- debug: msg="Consul configuration directory exists"
   when: consul_configuration_path.stat.isdir is defined and consul_configuration_path.stat.isdir
+
+- name: determine if consul is installed
+  command: which consul 
+  register: consul_executable
+  when: consul_configuration_path.stat.isdir is defined and consul_configuration_path.stat.isdir
+
+- debug: msg="Consul configuration directory exists"
+  when: consul_executable.stdout is defined and consul_executable.stdout != ""
+
+- name: determine consul version 
+  command: {{ consul_executable.stdout }} version | grep 'Consul v' | awk '{print $2}' | sed 's/[[:alpha:]|(|[:space:]]//g' | awk -F- '{print $1}'')]' 
+  register: consul_installed_version
+  when: consul_executable.stdout is defined and consul_executable.stdout != ""
+
+- debug: msg="Consul installed version: {{ consul_installed_version.stdout }}"
+  when: consul_installed_version.stdout is defined and consul_installed_version.stdout != ""
