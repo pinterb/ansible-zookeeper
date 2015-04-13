@@ -6,15 +6,16 @@
     "checks": [
       {
         "id": "zookeeper-running",
-        "name": "Zookeeper Service Status"
+        "name": "Zookeeper Service Status",
         "script": "{{ zookeeper_consul_check_dir }}/zookeeper-health",
 	"interval": "{{ zookeeper_consul_check_interval }}"
       },
       {
         "id": "zookeeper-ensemble",
-        "name": "Zookeeper Ensemble Status"
+        "name": "Zookeeper Ensemble Status",
         "script": "{{ zookeeper_consul_check_dir }}/zookeeper-ensemble-health",
 	"interval": "{{ zookeeper_consul_check_interval }}"
+      }
     ]
   }
 }
