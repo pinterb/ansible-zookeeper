@@ -14,7 +14,7 @@ zookeeper_log_dir: /var/log/zookeeper
 zookeeper_dir: /opt/zookeeper-{{zookeeper_version}}
 
 zookeeper_hosts: []
-zookeeper_host_count: {{ zookeeper_hosts | length }} 
+zookeeper_host_count: '{{ zookeeper_hosts | length }}'
 
 # Consul service registration & health checking
 zookeeper_consul_svc_registry_enabled: false 
