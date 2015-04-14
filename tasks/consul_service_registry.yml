@@ -16,3 +16,13 @@
   template: src=consul.svcdef.json.j2 dest={{ zookeeper_consul_conf_dir }}/zookeeper.service.json mode=664
   notify:
     - reload consul
+
+- name: install zookeeper consul check definition 01 
+  template: src=consul.check-01.json.j2 dest={{ zookeeper_consul_conf_dir }}/zookeeper.check-01.json mode=664
+  notify:
+    - reload consul
+
+- name: install zookeeper consul check definition 02 
+  template: src=consul.check-02.json.j2 dest={{ zookeeper_consul_conf_dir }}/zookeeper.check-02.json mode=664
+  notify:
+    - reload consul

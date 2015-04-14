@@ -60,14 +60,14 @@ health()
 	local label_check_two="Zookeeper health check 02: "
 	local check_two="echo $ZK_FLW_CMD | $NETCAT_CMD $ZK_HOST $ZK_PORT | $GREP_CMD -q ${ZK_FLW_EXPECTED_RESP}" 
 
-	echo ""
-	echo "$label_check_one $check_one"
-	local service_resp=`$ZK_SERVICE_CMD`
+  echo ""
+  echo "$label_check_one $check_one"
+  local service_resp=`$ZK_SERVICE_CMD`
   echo $service_resp | $GREP_CMD -q "${ZK_SERVICE_EXPECTED_RESP}"
 
   if [ $? -ne 0 ]; then
-		echoerr "$label_check_one Zookeeper service doesn't appear to be running."
-		exit 11 
+    echoerr "$label_check_one Zookeeper service doesn't appear to be running."
+    exit 11 
 	fi
 
 	echo "$label_check_two $check_two"

@@ -1,0 +1,9 @@
+{
+  "check": {
+    "service_id": "zookeeper",
+    "id": "zookeeper-ensemble",
+    "name": "Zookeeper Ensemble Status",
+    "script": "{{ zookeeper_consul_check_dir }}/zookeeper-ensemble-health",
+    "interval": "{{ zookeeper_consul_check_interval }}"
+  }
+}

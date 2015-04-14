@@ -1,0 +1,9 @@
+{
+  "check": {
+    "service_id": "zookeeper",
+    "id": "zookeeper-running",
+    "name": "Zookeeper Service Status",
+    "script": "{{ zookeeper_consul_check_dir }}/zookeeper-health",
+    "interval": "{{ zookeeper_consul_check_interval }}"
+  }
+}
