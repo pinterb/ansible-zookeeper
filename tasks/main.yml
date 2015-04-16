@@ -9,4 +9,4 @@
   when: zookeeper_consul_svc_registry_enabled
 
 - include: consul_service_registry.yml
-  when: consul_configuration_path.stat.isdir is defined and consul_configuration_path.stat.isdir
+  when: zookeeper_consul_svc_registry_enabled and consul_installed_version.stdout is defined and consul_installed_version.stdout != ""

@@ -2,27 +2,31 @@
 - name: create zookeeper health check directory
   file: path={{ zookeeper_consul_check_dir }} state=directory
 
-- name: install zookeeper consul check script 
+- name: install zookeeper consul check script
   template: src=zookeeper-health.j2 dest={{ zookeeper_consul_check_dir }}/zookeeper-health mode=755
   notify:
     - reload consul
 
-- name: install zookeeper ensemble consul check script 
+- name: install zookeeper ensemble consul check script
   template: src=zookeeper-ensemble-health.j2 dest={{ zookeeper_consul_check_dir }}/zookeeper-ensemble-health mode=755
   notify:
     - reload consul
 
-- name: install zookeeper consul services definition 
+- name: install zookeeper consul services definition
   template: src=consul.svcdef.json.j2 dest={{ zookeeper_consul_conf_dir }}/zookeeper.service.json mode=664
   notify:
     - reload consul
 
-- name: install zookeeper consul check definition 01 
+- name: install zookeeper consul check definition 01
   template: src=consul.check-01.json.j2 dest={{ zookeeper_consul_conf_dir }}/zookeeper.check-01.json mode=664
   notify:
     - reload consul
 
-- name: install zookeeper consul check definition 02 
+- name: install zookeeper ensemble consul check definition 02
   template: src=consul.check-02.json.j2 dest={{ zookeeper_consul_conf_dir }}/zookeeper.check-02.json mode=664
+  when: {{ zookeeper_hosts | length }} > 2
   notify:
     - reload consul
+
+- name: store zookeeper ensemble size in consul key/value store
+  key_value_config: provider=consul state=present key="zookeeper/hostCount" value="{{ zookeeper_hosts | length }}"
