@@ -24,7 +24,7 @@
 
 - name: install zookeeper ensemble consul check definition 02
   template: src=consul.check-02.json.j2 dest={{ zookeeper_consul_conf_dir }}/zookeeper.check-02.json mode=664
-  when: {{ zookeeper_hosts | length }} > 2
+  when: "{{ zookeeper_hosts | length }}" > "2"
   notify:
     - reload consul
 
